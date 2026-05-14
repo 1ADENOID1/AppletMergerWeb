@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+    <h2>Конфигуратор апплетов TXDC FES</h2>
+</header>
+<div id="fileListDiv" class="file-list">
+
+</div>
+<footer>
+    <input type="button" value="Назад" onclick="returnBack()">
+    <input type="button" value="Применить">
+</footer>
+<div id="toastContainer"></div>
+<script th:src="@{/fileSelectScripts.js}"></script>
+</body>
+</html>

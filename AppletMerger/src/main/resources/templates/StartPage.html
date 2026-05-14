@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h2>Конфигуратор апплетов TXDC FES</h2>
+    </header>
+    <div class="container">
+        <div class="form-group">
+            <label>Путь к директории дистрибутива</label>
+            <label>
+                <input id="distrInput">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Путь к пользовательской директории</label>
+            <label>
+                <input id="userInput">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Путь к директории резервного копирования</label>
+            <label>
+                <input id="backupInput">
+            </label>
+        </div>
+        <div class="checkbox-group">
+            <label>Создать поддиректорию в папке для резервного копирования</label>
+            <label>
+                <input type="checkbox" checked="checked" id="createBackupSubdirInput">
+            </label>
+        </div>
+        <div class="checkbox-group">
+            <label>Сохранить лог изменений</label>
+            <label>
+                <input type="checkbox" checked="checked" id="createChangelogInput">
+            </label>
+        </div>
+        <div class="form-group">
+            <label>Кодировка файлов</label>
+            <label>
+                <input value="UTF-8" id="fileEncodingInput">
+            </label>
+        </div>
+    </div>
+    <footer>
+        <input type="button" value="Назад">
+        <input type="button" value="Применить" onclick="sendSettings()">
+    </footer>
+
+    <div id="toastContainer"></div>
+
+    <script th:src="@{/scripts.js}"></script>
+</body>
+</html>
