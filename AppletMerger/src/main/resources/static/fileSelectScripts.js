@@ -6,7 +6,6 @@ fetch("/fileSelect/get")
     })
     .then(({ response, result }) => {
         if (response.status === 200) {
-            console.log(result)
             let parentFileDiv = document.getElementById("fileListDiv")
             parentFileDiv.innerHTML = ''
             for (let i in result) {
@@ -14,6 +13,7 @@ fetch("/fileSelect/get")
                 newFile.type = "button"
                 newFile.value = result[i]
                 newFile.className = "file-btn"
+                newFile.onclick = function() { getFileFields(this) }
                 parentFileDiv.appendChild(newFile)
             }
         } else if (response.status === 500) {
@@ -31,7 +31,31 @@ fetch("/fileSelect/get")
         }
     })
 
+function getFileFields(button) {
+    let filePath = button.value
+    fetch(`/fileSelect/getFields?filePath=${encodeURIComponent(filePath)}`)
+        .then(response => response.json())
+        .then(answer => {
+            let parentFileFieldsDiv = document.getElementById("jsonFields")
+            parentFileFieldsDiv.innerHTML = ''
+            console.log(answer)
+            Object.entries(answer).forEach(([key, value]) => {
 
+                let keyValueDiv = document.createElement("div")
+                keyValueDiv.className = "form-group"
+
+                let keyLabel = document.createElement("label")
+                keyLabel.innerText = key.replaceAll('█', " -> ")
+                keyValueDiv.appendChild(keyLabel)
+
+                let valueInput = document.createElement("input")
+                valueInput.value = value
+                keyValueDiv.appendChild(valueInput)
+
+                parentFileFieldsDiv.appendChild(keyValueDiv)
+            });
+        })
+}
 
 function returnBack() {
     if (confirm("Данное действие приведёт к потере изменений. Вы уверены, что хотите продолжить?")) {

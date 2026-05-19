@@ -203,3 +203,39 @@ input[type="button"]:last-child:hover {
 .file-btn:active {
     background: #e5e5e5;
 }
+
+.split-container {
+    display: flex;
+    gap: 20px;
+    min-height: calc(100vh - 160px);
+    margin-bottom: 20px;
+}
+
+.left-panel {
+    flex: 1;
+    border-right: 1px solid #e0e0e0;
+    padding-right: 20px;
+}
+
+.right-panel {
+    flex: 1;
+    padding-left: 20px;
+}
+
+@media (max-width: 768px) {
+    .split-container {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
+
+    .right-panel {
+        padding-left: 0;
+        padding-top: 20px;
+    }
+}
