@@ -229,4 +229,19 @@ public class JsonMap {
         return gson.toJsonTree(jsonCopy);
     }
 
+    public void changePropertyValue(String key, JsonElement value) {
+        this.jsonMap.replace(key, value);
+        expandJsonObjects();
+        System.out.println("JsonMap: " + key + ": " + value.toString());
+    }
+
+    public void addProperty(String key, JsonElement value) {
+        this.jsonMap.put(key, value);
+        expandJsonObjects();
+
+    }
+
+    public void deleteProperty(String key) {
+        this.jsonMap.remove(key);
+    }
 }

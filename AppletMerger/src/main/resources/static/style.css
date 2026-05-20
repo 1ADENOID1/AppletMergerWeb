@@ -239,3 +239,10 @@ input[type="button"]:last-child:hover {
         padding-top: 20px;
     }
 }
+
+.file-fields-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}

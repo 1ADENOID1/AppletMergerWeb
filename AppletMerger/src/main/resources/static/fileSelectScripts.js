@@ -5,9 +5,11 @@ fetch("/fileSelect/get")
         })
     })
     .then(({ response, result }) => {
+        let parentFileDiv = document.getElementById("fileListDiv")
+        parentFileDiv.innerHTML = ''
+
         if (response.status === 200) {
-            let parentFileDiv = document.getElementById("fileListDiv")
-            parentFileDiv.innerHTML = ''
+
             for (let i in result) {
                 let newFile = document.createElement("input")
                 newFile.type = "button"
@@ -16,45 +18,104 @@ fetch("/fileSelect/get")
                 newFile.onclick = function() { getFileFields(this) }
                 parentFileDiv.appendChild(newFile)
             }
+
         } else if (response.status === 500) {
-            let parentFileDiv = document.getElementById("fileListDiv")
-            parentFileDiv.innerHTML = ''
+
+            let errorLabel = document.createElement("label")
+
             if (result.status == "FileReadError") {
-                let errorLabel = document.createElement("label")
                 errorLabel.innerText = result.cause
-                parentFileDiv.appendChild(errorLabel)
+
             } else if (result.status == "SessionReadError") {
-                let errorLabel = document.createElement("label")
                 errorLabel.innerText = result.cause + ". Нажмите Назад и попробуйте снова"
-                parentFileDiv.appendChild(errorLabel)
+
+            } else {
+                errorLabel.innerText = "Неожиданная ошибка сервера"
             }
+
+            parentFileDiv.appendChild(errorLabel)
         }
     })
 
 function getFileFields(button) {
     let filePath = button.value
     fetch(`/fileSelect/getFields?filePath=${encodeURIComponent(filePath)}`)
-        .then(response => response.json())
-        .then(answer => {
+        .then(response => {
+                      return response.json().then(result => {
+                          return { response, result }
+                      })
+        })
+        .then(({ response, result }) => {
+
             let parentFileFieldsDiv = document.getElementById("jsonFields")
             parentFileFieldsDiv.innerHTML = ''
-            console.log(answer)
-            Object.entries(answer).forEach(([key, value]) => {
 
-                let keyValueDiv = document.createElement("div")
-                keyValueDiv.className = "form-group"
+            if (response.status === 200) {
 
-                let keyLabel = document.createElement("label")
-                keyLabel.innerText = key.replaceAll('█', " -> ")
-                keyValueDiv.appendChild(keyLabel)
+                sessionStorage.setItem("currentFile", filePath)
+                let headerLabel = document.getElementById("jsonFilesHeader")
+                headerLabel.innerHTML = ''
+                headerLabel.innerText = "Выбран файл: " + filePath
 
-                let valueInput = document.createElement("input")
-                valueInput.value = value
-                keyValueDiv.appendChild(valueInput)
+                Object.entries(result).forEach(([key, value]) => {
 
-                parentFileFieldsDiv.appendChild(keyValueDiv)
-            });
+                    let keyValueDiv = document.createElement("div")
+                    keyValueDiv.className = "file-fields-group"
+
+                    let keyLabel = document.createElement("label")
+                    keyLabel.innerText = key.replaceAll('█', " -> ")
+                    keyValueDiv.appendChild(keyLabel)
+
+                    let valueInput = document.createElement("input")
+                    valueInput.value = value
+                    valueInput.id = key
+                    keyValueDiv.appendChild(valueInput)
+
+                    parentFileFieldsDiv.appendChild(keyValueDiv)
+                });
+
+            } else if (response.status === 500) {
+
+                let errorLabel = document.createElement("label")
+
+                if (result.status == "FileFieldsReadError") {
+                    errorLabel.innerText = result.cause + ". Нажмите Назад и попробуйте снова"
+                } else {
+                    errorLabel.innerText = "Неожиданная ошибка сервера"
+                }
+
+                parentFileFieldsDiv.appendChild(errorLabel)
+            }
         })
+}
+
+function saveFileFields() {
+    let fileName = sessionStorage.getItem("currentFile")
+    console.log(fileName)
+    if (fileName == null) {
+        //TODO: Как-то оповестить юзверя что файл он не выбрал
+        return;
+    }
+
+    let fieldsParentDiv = document.getElementById("jsonFields")
+    let fieldInputs = fieldsParentDiv.querySelectorAll("input")
+
+    let fieldsMap = new Map()
+    fieldInputs.forEach( field => {
+        if (field.id != null) {
+            fieldsMap.set(field.id, field.value)
+        }
+
+    })
+    console.log(fieldsMap)
+
+    fetch(`/fileSelect/setFields?name=${encodeURIComponent(fileName)}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(Object.fromEntries(fieldsMap))
+    })
 }
 
 function returnBack() {
