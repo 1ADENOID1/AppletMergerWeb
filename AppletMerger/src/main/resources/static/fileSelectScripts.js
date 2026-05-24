@@ -118,6 +118,25 @@ function saveFileFields() {
     })
 }
 
+function saveFiles() {
+    if (confirm("Данное действие приведёт к записи изменений в файлы. Вы уверены, что хотите продолжить?")) {
+        fetch("fileSelect/save")
+        .then(response => {
+            return response.json().then(result => {
+                return { response, result }
+            })
+        })
+        .then(({ response, result }) => {
+            if (response.status === 200) {
+                window.location.href = "/"
+            }
+            if (response.status === 500) {
+                showToast("Произошла ошибка при сохранении")
+            }
+        })
+    }
+}
+
 function returnBack() {
     if (confirm("Данное действие приведёт к потере изменений. Вы уверены, что хотите продолжить?")) {
 

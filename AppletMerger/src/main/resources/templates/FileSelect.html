@@ -19,12 +19,12 @@
         <div id="jsonFields">
 
         </div>
-        <input type="button" onclick="saveFileFields()">
+        <input type="button" value="Сохранить изменения в выбранном файле" onclick="saveFileFields()">
     </div>
 </div>
 <footer>
     <input type="button" value="Назад" onclick="returnBack()">
-    <input type="button" value="Применить">
+    <input type="button" value="Применить" onclick="saveFiles()">
 </footer>
 <div id="toastContainer"></div>
 <script th:src="@{/fileSelectScripts.js}"></script>
